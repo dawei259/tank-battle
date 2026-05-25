@@ -713,6 +713,7 @@
 
     // Player input
     if (player && player.alive) {
+      player.update();
       let moved = false;
       if (keys['ArrowUp']    || keys['KeyW']) { player.dir = DIR.UP;    moved = true; }
       if (keys['ArrowDown']  || keys['KeyS']) { player.dir = DIR.DOWN;  moved = true; }
