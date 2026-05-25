@@ -176,6 +176,8 @@
   let keys = {};
   let enemyShootCooldown = 0;
   let lastTime = 0;
+  let accumulator = 0;
+  const FIXED_STEP = 1000 / 60;
 
   // --- map generation ---
   function generateMap(lvl) {
@@ -273,7 +275,7 @@
       this.isPlayer = isPlayer;
       this.speed = isPlayer ? 1 : 0.5;
       this.moveTimer = 0;
-      this.moveDelay = isPlayer ? 6 : 35;
+      this.moveDelay = isPlayer ? 2 : 35;
       this.shootCooldown = 0;
       this.shootDelay = isPlayer ? 15 : 50;
       this.alive = true;
@@ -786,12 +788,13 @@
     if (gameOver) { draw(); requestAnimationFrame(gameLoop); return; }
 
     if (lastTime === 0) lastTime = time;
-    const elapsed = time - lastTime;
+    const elapsed = Math.min(time - lastTime, 100);
     lastTime = time;
 
-    // Cap update rate
-    if (elapsed > 16) {
+    accumulator += elapsed;
+    while (accumulator >= FIXED_STEP) {
       update();
+      accumulator -= FIXED_STEP;
     }
 
     draw();
@@ -864,6 +867,7 @@
     gamePaused = false;
     initLevel(level);
     lastTime = 0;
+    accumulator = 0;
     updateUI();
   });
 
@@ -877,6 +881,7 @@
     gamePaused = false;
     initLevel(level);
     lastTime = 0;
+    accumulator = 0;
     updateUI();
   });
 
@@ -889,6 +894,7 @@
     gamePaused = false;
     initLevel(level);
     lastTime = 0;
+    accumulator = 0;
     updateUI();
   });
 
